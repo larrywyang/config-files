@@ -1,0 +1,22 @@
+# This is Git's per-user configuration file.
+[push]
+	default = simple
+[user]
+	name = Larry Yang
+	email = larrywyang@gmail.com
+[core]
+	excludesfile = /Users/larrywyang/.global_ignore
+	editor = vim
+[merge]
+	tool = vimdiff
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[alias]
+  lg = log --all --decorate --oneline --graph
+  br = branch
+  pu = pull
+  st = status
+  co = checkout
