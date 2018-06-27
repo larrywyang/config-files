@@ -1,109 +1,115 @@
 " Pathogen
 execute pathogen#infect()
 
+" Disable beeping
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
+
+" Speed up gitgutter
+let g:gitgutter_realtime = 0
+let g:gitgutter_eager = 0
+
+" Tabline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
+let g:airline_powerline_fonts = 1
+
 "" NerdTREE
-map <F2> :NERDTreeToggle<CR>
-map <C-n> :NERDTreeToggle<CR>
-" autocmd vimenter * NERDTree     " Automatically open NerdTree
+"autocmd vimenter * NERDTree     " Automatically open NerdTree
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" Ctrl-n to toggle nerdtree
+nnoremap <leader>n :NERDTreeToggle<CR>
 
-" Ctrl P ignore .gitignore
-let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+" Splits
+nnoremap <leader>v :vsplit<CR>
 
-" Youcompleteme fix
-let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_show_diagnostics_ui = 0
+" Ctrl P
+"let g:ctrlp_custom_ignore = {
+ ""\ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
+"\}
+nmap <leader>bb :CtrlPBuffer<cr>
+nmap <leader>bm :CtrlPMixed<cr>
+nmap <leader>bs :CtrlPMRU<cr>
 
-" Vim tagbar
+" Tagbar
 nmap <F8> :TagbarToggle<CR>
 
-" Disable beeping
-set noerrorbells visualbell t_vb=
-autocmd GUIEnter * set visualbell t_vb=
+" YouCompleteMe for python
+"let g:ycm_python_binary_path = 'python'
+"let g:ycm_autoclose_preview_window_after_insertion = 1
+" Temporarily disable YCM
+let g:loaded_youcompleteme = 1
 
-" vsplit
-noremap <leader>v :vsplit<CR>
+set hidden
+" Open ctags in new tab
+noremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>zz
+" Open ctags in vertical split
+noremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>zz
+" Print ipdb debug line
+noremap <leader>db Oimport ipdb; ipdb.set_trace();<ESC>
 
-" Colors
-syntax enable
-set t_Co=256
-
-" Vim Airline
-" Enable the list of buffers
-let g:airline#extensions#tabline#enabled = 1
-" Show just the filename
-let g:airline#extensions#tabline#fnamemod = ':t'
-" Make separators fancy
-let g:airline_powerline_fonts = 1
-
-" Buffergator
 " Use the right side of the screen
 let g:buffergator_viewport_split_policy = 'R'
 " I want my own keymappings...
 let g:buffergator_suppress_keymaps = 1
+
 " Looper buffers
-"let g:buffergator_mru_cycle_loop = 1
+" Let g:buffergator_mru_cycle_loop = 1
 " Go to the previous buffer open
 nmap <leader>jj :BuffergatorMruCyclePrev<cr>
 " Go to the next buffer open
 nmap <leader>kk :BuffergatorMruCycleNext<cr>
 " View the entire list of buffers open
 nmap <leader>bl :BuffergatorOpen<cr>
-nmap <leader>bb :CtrlPBuffer<cr>
-nmap <leader>bm :CtrlPMixed<cr>
-nmap <leader>bs :CtrlPMRU<cr>
-
-" This allows buffers to be hidden if you've modified a buffer.
-" This is almost a must if you wish to use buffers in this way.
-set hidden
-" Open a new empty buffer
-noremap <leader>t :enew<CR>
+" Shared bindings from Solution #1 from earlier
+nmap <leader>t :enew<cr>
 " Close the current buffer and move to the previous one
-noremap <leader>bq :bp <BAR> bd #<CR>
+nmap <leader>bq :bp <BAR> bd #<cr>
 
-" Set colorscheme
+" Center search results
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zzN
+nnoremap # #zz
+nnoremap g* g*zzN
+nnoremap g# g#zz
+
+" Colors
+syntax enable               " enable syntax processing
+set t_Co=256
 colorscheme solarized
 set background=dark
 
 " Spaces and Tabs
-set tabstop=2               " number of visual spaces per TAB
-set softtabstop=2           " number of spaces in tab when editing
-set shiftwidth=2            " number of spaces for autoindentation
-autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+set tabstop=4               " number of visual spaces per TAB
+set softtabstop=4           " number of spaces in tab when editing
+set shiftwidth=4            " number of spaces for autoindentation
 set expandtab               " tabs are spaces
+
+" Toggle paste mode
+set pastetoggle=<leader>p
 
 " UI Config
 filetype plugin indent on   " load filetype-specific indent files
-set backspace=indent,eol,start " Fix backspace
-set ruler
 set number                  " show line numbers
 set showcmd                 " show command in bottom bar
 set cursorline              " highlight current line
+"hi CursorLine cterm=None ctermbg=16 ctermfg=None guibg=None
 hi CursorLine ctermbg=black
-"hi CursorLine cterm=None ctermbg=black ctermfg=None guibg=None
 set wildmenu                " visual autocomplete for command menu
 set lazyredraw              " redraw only when we need to.
 set showmatch               " highlight matching [{()}]
 
-" Latex
-" IMPORTANT: grep will sometimes skip displaying the file name if you
-" search in a singe file. This will confuse Latex-Suite. Set your grep
-" program to always generate a file-name.
-set grepprg=grep\ -nH\ $*
-" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
-" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
-" The following changes the default filetype back to 'tex':
-let g:tex_flavor='latex'
-:helptags ~/.vim/bundle/vim-latex/doc/
-
 " Searching
 set incsearch               " search as characters are entered
 set hlsearch                " highlight matches
+
 " turn off search highlight
 nnoremap <esc><esc> :noh<return><esc>
 
@@ -112,5 +118,6 @@ set foldenable              " enable folding
 set foldlevelstart=10       " open most folds by default
 set foldnestmax=10          " 10 nested fold max
 set foldmethod=indent       " fold based on indent level
+
 " space open/closes folds
 nnoremap <space> za
